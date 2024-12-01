@@ -1,6 +1,4 @@
 name: CI Pipeline
-permissions:
-   contents: write
 
 on:
   push:
@@ -72,6 +70,8 @@ jobs:
   updateIACrepo:
     needs: build
     runs-on: ubuntu-latest
+    permissions:
+     contents: write
     steps:
       - uses: actions/checkout@v3
         name: changing the deployment of the IAC repo
