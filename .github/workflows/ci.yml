@@ -5,10 +5,10 @@ on:
     branches:
       - "master"
       - "feature/**"
-  pull_request:
-    branches:
-      - "master"
-      - "feature/**"
+#  pull_request:
+#    branches:
+#      - "master"
+#      - "feature/**"
 
 env:
   AWS_REGION: ap-southeast-2 # Update to your AWS region
