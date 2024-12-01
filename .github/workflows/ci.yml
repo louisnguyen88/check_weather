@@ -1,5 +1,5 @@
 name: CI Pipeline
-permissions: write-all
+
 on:
   push:
     branches:
@@ -70,23 +70,29 @@ jobs:
   updateIACrepo:
     needs: build
     runs-on: ubuntu-latest
+    permissions:
+     contents: write
     steps:
+      - name: Install SSH key
+        uses: webfactory/ssh-agent@v0.7.0
+        with:
+          ssh-private-key: ${{ secrets.SSH_PRIVATE_KEY }}
+      - name: Add known hosts
+        run: |
+          mkdir -p ~/.ssh
+          ssh-keyscan github.com >> ~/.ssh/known_hosts
+          
       - uses: actions/checkout@v3
-        name: changing the deployment of the IAC repo
+        name: Checkout IAC repo
         with:
           repository: 'louisnguyen88/iac_checkweather'
           ref: master
-          token: ${{ secrets.GITHUB_TOKEN }}
+          ssh-key: ${{ secrets.SSH_PRIVATE_KEY }}
       - name: modify the image
         run: |
           git config user.email louisnguyen252@gmail.com
           git config user.name louisnguyen88
-          pwd
-          cat k8s/deployment.yaml
-          pwd
           sed -i "s|image:.*|image: ${{ secrets.AWS_ACCOUNT_ID }}.dkr.ecr.${{ env.AWS_REGION }}.amazonaws.com/${{ env.ECR_REPOSITORY }}:${{ env.IMAGE_TAG }}|g" k8s/deployment.yaml
           git add .
-          git commit -m 'Done  by Github Actions   Job changemanifest: ${{ github.run_number }}'
+          git commit -m 'Done by Github Actions Job changemanifest: ${{ github.run_number }}'
           git push origin master
-        env:
-          GITHUB_TOKEN: ${{ secrets.GITHUB_TOKEN }}
