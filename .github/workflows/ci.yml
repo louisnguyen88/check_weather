@@ -1,5 +1,5 @@
 name: CI Pipeline
-
+permissions: write-all
 on:
   push:
     branches:
@@ -67,29 +67,26 @@ jobs:
             ${{ secrets.AWS_ACCOUNT_ID }}.dkr.ecr.${{ env.AWS_REGION }}.amazonaws.com/${{ env.ECR_REPOSITORY }}:latest
           file: ./Dockerfile
 
-  modifygit:
+  updateIACrepo:
     needs: build
     runs-on: ubuntu-latest
     steps:
       - uses: actions/checkout@v3
-        name: changing the deployment of git repo
+        name: changing the deployment of the IAC repo
         with:
           repository: 'louisnguyen88/iac_checkweather'
-          token: ${{ secrets.GIT_PASSWORD }}
+          ref: master
+          token: ${{ secrets.GITHUB_TOKEN }}
       - name: modify the image
         run: |
           git config user.email louisnguyen252@gmail.com
           git config user.name louisnguyen88
           pwd
-          cat deployment.yaml
+          cat k8s/deployment.yaml
           pwd
-          sed -i "s|image:.*|image: ${{ secrets.AWS_ACCOUNT_ID }}.dkr.ecr.${{ env.AWS_REGION }}.amazonaws.com/${{ env.ECR_REPOSITORY }}:${{ env.IMAGE_TAG }}|g" deployment.yaml
+          sed -i "s|image:.*|image: ${{ secrets.AWS_ACCOUNT_ID }}.dkr.ecr.${{ env.AWS_REGION }}.amazonaws.com/${{ env.ECR_REPOSITORY }}:${{ env.IMAGE_TAG }}|g" k8s/deployment.yaml
           git add .
           git commit -m 'Done  by Github Actions   Job changemanifest: ${{ github.run_number }}'
-          git push origin main
+          git push origin master
         env:
-          GIT_USERNAME: ${{ secrets.GIT_USERNAME }}
-          GIT_PASSWORD: ${{ secrets.GIT_PASSWORD }}
-          AWS_REGION: ${{ env.AWS_REGION }}
-          ECR_REPOSITORY: ${{ env.ECR_REPOSITORY }}
-          IMAGE_TAG: ${{ env.IMAGE_TAG }}
+          GITHUB_TOKEN: ${{ secrets.GITHUB_TOKEN }}
