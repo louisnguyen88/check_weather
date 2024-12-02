@@ -39,6 +39,12 @@ jobs:
       - name: build
         run: ./gradlew clean build
 
+      # Step 6: Verify JAR file
+      - name: Verify JAR file exists
+        run: |
+               ls -l build/libs/
+               test -f build/libs/*.jar
+
       # Step 6: Run Unit test
       - name: unit test
         run: ./gradlew clean test
