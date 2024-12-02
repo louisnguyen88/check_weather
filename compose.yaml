@@ -5,5 +5,5 @@ services:
       context: .
       dockerfile: Dockerfile # Optional, if Dockerfile is in the same directory
     ports:
-      - "8080:8080" # Map container port 8080 to host port 8080
+      - "8080:8082" # Map container port 8080 to host port 8080
     container_name: check-weather-container
