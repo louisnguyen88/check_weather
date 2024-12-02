@@ -39,21 +39,9 @@ jobs:
       - name: build
         run: ./gradlew clean build
 
-      # Step 6: Verify JAR file
-      - name: Verify JAR file exists
-        run: |
-               ls -l build/libs/
-               test -f build/libs/*.jar
-
-      - name: Verify JAR file exists
-        run: |
-            ls -l build/libs/
-            if [ -f build/libs/check_weather_app-0.0.1-SNAPSHOT.jar ]; then
-               echo "JAR file exists."
-            else
-               echo "JAR file is missing!" >&2
-            exit 1
-            fi
+      # Step 6: Run Unit test
+      - name: unit test
+        run: ./gradlew clean test
 
       # Step 7: Run Component test
       - name: component test
