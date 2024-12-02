@@ -39,7 +39,15 @@ jobs:
       - name: build
         run: ./gradlew clean build
 
-      # Step 6: Configure AWS Credentials
+      # Step 6: Run Unit test
+      - name: unit test
+        run: ./gradlew clean test
+
+      # Step 7: Run Component test
+      - name: component test
+        run: ./gradlew clean componentTest
+
+      # Step 8: Configure AWS Credentials
       - name: configure aws credentials
         uses: aws-actions/configure-aws-credentials@v4
         with:
@@ -47,12 +55,12 @@ jobs:
           aws-access-key-id: ${{ secrets.AWS_ACCESS_KEY_ID }}
           aws-secret-access-key: ${{ secrets.AWS_ACCESS_KEY }}
 
-      # Step 7: Login to Amazon ECR using AWS_ACCESS_KEY_ID
+      # Step 9: Login to Amazon ECR using AWS_ACCESS_KEY_ID
       - name: Login to Amazon ECR
         run: |
           aws ecr get-login-password --region ${{ env.AWS_REGION }} | docker login --username AWS --password-stdin ${{ secrets.AWS_ACCOUNT_ID }}.dkr.ecr.${{ env.AWS_REGION }}.amazonaws.com
 
-      # Step 8: Build and Push Docker Image to ECR
+      # Step 10: Build and Push Docker Image to ECR
       - name: build and push
         uses: docker/build-push-action@v4
         with:
