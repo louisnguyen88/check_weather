@@ -16,7 +16,7 @@ public class GlobalExceptionHandler {
     public ResponseEntity<String> handleInvalidApiKeyException(InvalidApiKeyException ex) {
         return ResponseEntity
                 .status(HttpStatus.UNAUTHORIZED)
-                .body("Invalid or missing API key provided. Please check your API key and try again.");
+                .body("Wrong API Key");
     }
 
     @ExceptionHandler(RateLimitExceededException.class)

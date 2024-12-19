@@ -58,7 +58,7 @@ public class CheckWeatherController {
                         .onErrorResume(error -> apiErrorHandler.handleApiError(error, city, country)))
                 .onErrorResume(InvalidApiKeyException.class, e ->
                         Mono.just(ResponseEntity.status(HttpStatus.UNAUTHORIZED)
-                                .body("Error: Invalid API key provided. Please check your API key and try again.")))
+                                .body("Wrong:" + e.getMessage())))
                 .onErrorResume(RateLimitExceededException.class, e ->
                         Mono.just(ResponseEntity.status(HttpStatus.TOO_MANY_REQUESTS)
                                 .body("Error: API rate limit exceeded. Please try again later.")));
